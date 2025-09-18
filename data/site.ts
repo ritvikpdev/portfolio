@@ -18,7 +18,7 @@ export const siteConfig: SiteConfig = {
   title: "Portfolio | Ritvik K Panchbhaiya - Full-Stack Developer",
   description: "Full-stack developer with over 3 years of experience in creating functional applications and backend solutions.",
   email: "ritvik.kumar1104@gmail.com",
-  url: "https://ritvikdev.com",
+  url: "https://ritvikdev.vercel.app",
   ogImage: "/og-image.jpg",
   links: {
     github: "https://github.com/ritvikm10",
