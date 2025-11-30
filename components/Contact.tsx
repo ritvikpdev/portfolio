@@ -1,18 +1,27 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import emailjs from '@emailjs/browser';
 import { siteConfig } from '@/data/site';
 
 export default function Contact() {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
+    subject: '',
     message: ''
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [statusMessage, setStatusMessage] = useState('');
+
+  // Initialize EmailJS when component mounts
+  useEffect(() => {
+    if (siteConfig.emailjs.publicKey) {
+      emailjs.init(siteConfig.emailjs.publicKey);
+    }
+  }, []);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -26,14 +35,74 @@ export default function Contact() {
     e.preventDefault();
     setIsSubmitting(true);
     setSubmitStatus('idle');
+    setStatusMessage('');
 
-    // Simulate form submission for now
-    setTimeout(() => {
-      setSubmitStatus('success');
-      setStatusMessage('Thank you! Your message has been sent successfully.');
-      setFormData({ name: '', email: '', message: '' });
+    try {
+      // Check if EmailJS is properly configured
+      if (!siteConfig.emailjs.serviceId || !siteConfig.emailjs.templateId || !siteConfig.emailjs.publicKey) {
+        throw new Error('EmailJS configuration is missing. Please check your site configuration.');
+      }
+
+      // Validate the configuration values aren't placeholders
+      if (siteConfig.emailjs.serviceId.includes('your_') || 
+          siteConfig.emailjs.templateId.includes('your_') ||
+          siteConfig.emailjs.publicKey.includes('your_')) {
+        throw new Error('Please update the EmailJS configuration in data/site.ts with your actual service credentials.');
+      }
+
+      // Prepare template parameters
+      const templateParams = {
+        from_name: formData.name,
+        from_email: formData.email,
+        subject: formData.subject,
+        message: formData.message,
+        to_email: siteConfig.email,
+        reply_to: formData.email,
+      };
+
+      console.log('Sending email with params:', { 
+        serviceId: siteConfig.emailjs.serviceId,
+        templateId: siteConfig.emailjs.templateId,
+        templateParams 
+      });
+
+      // Send email using EmailJS
+      const response = await emailjs.send(
+        siteConfig.emailjs.serviceId,
+        siteConfig.emailjs.templateId,
+        templateParams
+      );
+
+      console.log('EmailJS response:', response);
+
+      if (response.status === 200) {
+        setSubmitStatus('success');
+        setStatusMessage('Thank you! Your message has been sent successfully.');
+        setFormData({ name: '', email: '', subject: '', message: '' });
+      } else {
+        throw new Error(`Failed to send email. Status: ${response.status}`);
+      }
+    } catch (error) {
+      console.error('EmailJS Error:', error);
+      setSubmitStatus('error');
+      
+      // Provide more specific error messages
+      let errorMessage = 'Sorry, there was an error sending your message. Please try again or contact me directly.';
+      
+      if (error instanceof Error) {
+        if (error.message.includes('configuration')) {
+          errorMessage = error.message;
+        } else if (error.message.includes('Failed to send email')) {
+          errorMessage = 'Failed to send email. Please check your internet connection and try again.';
+        } else if (error.message.includes('Invalid user ID')) {
+          errorMessage = 'EmailJS configuration error. Please contact the site administrator.';
+        }
+      }
+      
+      setStatusMessage(errorMessage);
+    } finally {
       setIsSubmitting(false);
-    }, 1000);
+    }
   };
 
   return (
@@ -238,6 +307,25 @@ export default function Contact() {
                   aria-describedby="email-required"
                 />
                 <div id="email-required" className="sr-only">Email is required</div>
+              </div>
+
+              {/* Subject Field */}
+              <div>
+                <label htmlFor="subject" className="block text-sm font-medium text-gray-300 mb-2">
+                  Subject *
+                </label>
+                <input
+                  type="text"
+                  id="subject"
+                  name="subject"
+                  value={formData.subject}
+                  onChange={handleInputChange}
+                  required
+                  className="w-full px-4 py-3 border border-gray-600 rounded-lg focus-ring bg-gray-800 text-white"
+                  placeholder="What's this about?"
+                  aria-describedby="subject-required"
+                />
+                <div id="subject-required" className="sr-only">Subject is required</div>
               </div>
 
               {/* Message Field */}

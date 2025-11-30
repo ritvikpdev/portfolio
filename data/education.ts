@@ -37,7 +37,7 @@ export const education: Education[] = [
       "Awarded the International Impact Award, receiving 50% tuition scholarship for academic excellence and potential impact."
     ],
     
-    gpa: "NA yet",
+    gpa: "4.0/4.0",
     institutionUrl: "https://www.gwu.edu/"
   }
   ,{
@@ -57,7 +57,7 @@ export const education: Education[] = [
       "Completed an internship at Agilite Global solutions as a Software developer Intern",
       "Represented the university at major inter-college cricket tournaments."
     ],
-    gpa: "8.94/10",
+    gpa: "8.9/10.0",
     institutionUrl: "https://smu.edu.in/smit/"
   }
 ];

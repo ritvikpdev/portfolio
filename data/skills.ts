@@ -22,6 +22,7 @@ export const skills: Skill[] = [
   { name: "TypeScript", level: 4, category: "languages", icon: "🔷", logo: "/logos/typescript.svg", description: "Strong typing for better code quality" },
   { name: "SQL", level: 4, category: "languages", icon: "🗃️", logo: "/logos/sql.svg", description: "Proficient in database queries and operations" },
   { name: "Python", level: 3, category: "languages", icon: "🐍", logo: "/logos/python.svg", description: "Basics in scripting and data analysis" },
+  { name: "GO", level: 4, category: "languages", icon: "🟢", logo: "/logos/go.svg", description: "" },
 
   // Frontend Technologies
   { name: "React", level: 4, category: "frontend", icon: "⚛️", logo: "/logos/react.svg", description: "Component-based UI development" },

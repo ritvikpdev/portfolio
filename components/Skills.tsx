@@ -376,39 +376,46 @@ const RelatedWork = ({ focusCategoryId, focusSkillName }: { focusCategoryId: str
     return [...projectItems, ...experienceItems];
   }, [targetSkills]);
 
-  if (items.length === 0) {
-    return <div className="text-center text-gray-400 text-sm">No related projects or experience for this category.</div>;
-  }
-
   return (
     <div>
-      <div className="text-center text-gray-300 mb-3">Where this skill is used</div>
-      <div className="flex flex-col gap-3">
-        {items.map((it, i) => {
-          const Tag = it.url ? 'a' : 'div';
-          return (
-            <motion.div
-              key={it.id}
-              initial={{ opacity: 0, y: 6 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.25, delay: i * 0.05 }}
-            >
-              {/* @ts-ignore - Tag is narrowed at runtime */}
-              <Tag
-                href={it.url}
-                target={it.url ? '_blank' : undefined}
-                rel={it.url ? 'noreferrer' : undefined}
-                className="flex items-center gap-2 px-3 py-2 rounded-md bg-gray-800/80 border border-gray-700 text-white text-sm hover:bg-gray-700 shadow-sm"
-              >
-                <span className={`text-[10px] px-1.5 py-0.5 rounded ${it.kind === 'project' ? 'bg-blue-500/20 text-blue-300' : 'bg-green-500/20 text-green-300'}`}>
-                  {it.kind === 'project' ? 'Project' : 'Experience'}
-                </span>
-                <span className="truncate">{it.title}</span>
-              </Tag>
-            </motion.div>
-          );
-        })}
-      </div>
+      {focusSkillName && (
+        <div className="text-center mb-2">
+          <h3 className="text-xl md:text-2xl font-semibold text-white mb-1">{focusSkillName}</h3>
+        </div>
+      )}
+      {items.length === 0 ? (
+        <div className="text-center text-gray-400 text-sm">No related projects or experience for this category.</div>
+      ) : (
+        <>
+          <div className="text-center text-gray-300 mb-3">Where this skill is used</div>
+          <div className="flex flex-col gap-3">
+            {items.map((it, i) => {
+              const Tag = it.url ? 'a' : 'div';
+              return (
+                <motion.div
+                  key={it.id}
+                  initial={{ opacity: 0, y: 6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.25, delay: i * 0.05 }}
+                >
+                  {/* @ts-ignore - Tag is narrowed at runtime */}
+                  <Tag
+                    href={it.url}
+                    target={it.url ? '_blank' : undefined}
+                    rel={it.url ? 'noreferrer' : undefined}
+                    className="flex items-center gap-2 px-3 py-2 rounded-md bg-gray-800/80 border border-gray-700 text-white text-sm hover:bg-gray-700 shadow-sm"
+                  >
+                    <span className={`text-[10px] px-1.5 py-0.5 rounded ${it.kind === 'project' ? 'bg-blue-500/20 text-blue-300' : 'bg-green-500/20 text-green-300'}`}>
+                      {it.kind === 'project' ? 'Project' : 'Experience'}
+                    </span>
+                    <span className="truncate">{it.title}</span>
+                  </Tag>
+                </motion.div>
+              );
+            })}
+          </div>
+        </>
+      )}
     </div>
   );
 };

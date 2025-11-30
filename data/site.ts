@@ -11,6 +11,11 @@ export interface SiteConfig {
     instagram?: string;
   };
   location: string;
+  emailjs: {
+    serviceId: string;
+    templateId: string;
+    publicKey: string;
+  };
 }
 
 export const siteConfig: SiteConfig = {
@@ -21,9 +26,14 @@ export const siteConfig: SiteConfig = {
   url: "https://ritvikdev.vercel.app",
   ogImage: "/og-image.jpg",
   links: {
-    github: "https://github.com/ritvikm10",
-    linkedin: "https://www.linkedin.com/in/ritvik-kumar10/",
+    github: "https://github.com/ritvikpdev",
+    linkedin: "https://www.linkedin.com/in/ritvikpanchbhaiya/",
     instagram: "https://instagram.com/ritvik_m10",
   },
   location: "Arlington, Virginia, USA",
+  emailjs: {
+    serviceId: process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID || "service_z7nj9sg",
+    templateId: process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID || "template_3l9frgs",
+    publicKey: process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY || "MaiDCmstpTruYdj0S",
+  },
 };

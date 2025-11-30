@@ -35,7 +35,7 @@ export const companyExperiences: CompanyExperience[] = [
           "Enhanced automation capabilities and configured the codebase for CI/CD deployments using Jenkins, enabling smoother releases and reducing deployment errors",
           "Delivered features in a Scrum-based Agile environment using Jira, while leveraging Bitbucket for version control, branch management, and peer code reviews"
         ],
-        "technologies": ["Java", "Spring Boot", "SQL", "Oracle Database" , "Jenkins", "HTML", "CSS", "JavaScript", "Bitbucket", "Jira", "Agile/Scrum"]
+        "technologies": ["Java", "Spring Boot", "SQL", "Oracle Database" , "Jenkins", "HTML", "CSS", "JavaScript", "Bitbucket", "Jira", "Agile/Scrum","Git","Docker","Maven",]
       },
       {
         "position": "Associate Software Engineer",
@@ -48,7 +48,7 @@ export const companyExperiences: CompanyExperience[] = [
           "Participated in code reviews, debugging, and integration testing, ensuring reliable and maintainable code",
           "Completed a 3-month Java Full Stack training program, gaining hands-on experience with Spring Boot, Hibernate, JSP/Servlets, and delivering end-to-end applications"
         ],
-        "technologies": ["Java", "Spring Boot", "Hibernate", "JSP/Servlets", "MySQL", "SQL", "HTML", "CSS", "JavaScript", "Jira", "Bitbucket", "Agile/Scrum"]
+        "technologies": ["Java", "Spring Boot", "Hibernate", "JSP/Servlets", "MySQL", "SQL", "HTML", "CSS", "JavaScript", "Jira", "Bitbucket", "Agile/Scrum","Git","Thymeleaf"]
       }
     ]
   },
