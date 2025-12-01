@@ -1,13 +1,15 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, useRef } from 'react';
 import { siteConfig } from '@/data/site';
 
 export default function Hero() {
   const [typedLines, setTypedLines] = useState<string[]>(['', '', '']);
   const [isTyping, setIsTyping] = useState<boolean>(true);
   const [isFinishingZoom, setIsFinishingZoom] = useState<boolean>(false);
+  const timeoutRefs = useRef<NodeJS.Timeout[]>([]);
+  const shouldContinueTyping = useRef<boolean>(true);
 
   // Lines to type
   const lines = useMemo(
@@ -19,21 +21,61 @@ export default function Hero() {
     []
   );
 
+  // Cancel animation function
+  const cancelAnimation = () => {
+    shouldContinueTyping.current = false;
+    // Clear all pending timeouts
+    timeoutRefs.current.forEach(timeout => clearTimeout(timeout));
+    timeoutRefs.current = [];
+    setIsTyping(false);
+    setIsFinishingZoom(false);
+    // Complete all lines instantly
+    setTypedLines(lines);
+  };
+
+  // Handle clicks outside terminal window
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (!isTyping && !isFinishingZoom) return;
+      
+      const target = event.target as HTMLElement;
+      const terminalElement = document.querySelector('[aria-label="Terminal style introduction"]');
+      
+      if (terminalElement && !terminalElement.contains(target)) {
+        cancelAnimation();
+      }
+    };
+
+    if (isTyping || isFinishingZoom) {
+      document.addEventListener('click', handleClickOutside);
+      return () => {
+        document.removeEventListener('click', handleClickOutside);
+      };
+    }
+  }, [isTyping, isFinishingZoom, lines]);
+
   // Type words one by one across lines
   useEffect(() => {
+    shouldContinueTyping.current = true;
     let activeLine = 0;
     let words: string[] = lines[activeLine].split(/\s+/).filter(Boolean);
     let wordIdx = 0;
-    const wordDelayMs = 315; // further 50% slower than 210ms
-    const lineDelayMs = 900; // proportionally slower between lines
+    const wordDelayMs = 200; // Increased typing speed (reduced from 315ms)
+    const lineDelayMs = 600; // Proportionally faster between lines (reduced from 900ms)
 
     const typeNext = () => {
+      // Check if animation was cancelled
+      if (!shouldContinueTyping.current) {
+        return;
+      }
+
       // Completed all lines
       if (activeLine >= lines.length) {
         setIsTyping(false);
         // Keep zoom for a brief moment so buttons appear while zoomed
         setIsFinishingZoom(true);
-        setTimeout(() => setIsFinishingZoom(false), 1500);
+        const finishTimeout = setTimeout(() => setIsFinishingZoom(false), 1500);
+        timeoutRefs.current.push(finishTimeout);
         return;
       }
 
@@ -49,7 +91,8 @@ export default function Hero() {
         const nextWord = typeof words[wordIdx] === 'string' ? words[wordIdx] : '';
         if (nextWord === '') {
           wordIdx += 1;
-          setTimeout(typeNext, 0);
+          const timeout = setTimeout(typeNext, 0);
+          timeoutRefs.current.push(timeout);
           return;
         }
         setTypedLines((prev) => {
@@ -58,7 +101,8 @@ export default function Hero() {
           return next;
         });
         wordIdx += 1;
-        setTimeout(typeNext, wordDelayMs);
+        const timeout = setTimeout(typeNext, wordDelayMs);
+        timeoutRefs.current.push(timeout);
         return;
       }
 
@@ -67,7 +111,8 @@ export default function Hero() {
       if (activeLine < lines.length) {
         words = lines[activeLine].split(/\s+/).filter(Boolean);
         wordIdx = 0;
-        setTimeout(typeNext, lineDelayMs);
+        const timeout = setTimeout(typeNext, lineDelayMs);
+        timeoutRefs.current.push(timeout);
         return;
       }
 
@@ -76,7 +121,11 @@ export default function Hero() {
     };
 
     const start = setTimeout(typeNext, 350);
-    return () => clearTimeout(start);
+    timeoutRefs.current.push(start);
+    return () => {
+      timeoutRefs.current.forEach(timeout => clearTimeout(timeout));
+      timeoutRefs.current = [];
+    };
   }, [lines]);
 
   // Hide header while zooming; ensure restored when zoom ends

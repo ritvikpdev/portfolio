@@ -25,7 +25,7 @@ export const skills: Skill[] = [
   { name: "GO", level: 4, category: "languages", icon: "🟢", logo: "/logos/go.svg", description: "" },
 
   // Frontend Technologies
-  { name: "React", level: 4, category: "frontend", icon: "⚛️", logo: "/logos/react.svg", description: "Component-based UI development" },
+  { name: "React.js", level: 4, category: "frontend", icon: "⚛️", logo: "/logos/react.svg", description: "Component-based UI development" },
   { name: "Next.js", level: 4, category: "frontend", icon: "⚡", logo: "/logos/next.svg", description: "Full-stack React framework" },
   { name: "HTML", level: 5, category: "frontend", icon: "🌐", logo: "/logos/html.svg", description: "Expert in semantic markup" },
   { name: "CSS", level: 5, category: "frontend", icon: "🎨", logo: "/logos/css.svg", description: "Expert in styling" },
